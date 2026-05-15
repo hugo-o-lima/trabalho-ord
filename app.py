@@ -11,7 +11,7 @@ def main():
     jogos_string = interpretador.ler_arquivo("games.dat")
     lst_jogos = interpretador.split_arquivo(jogos_string)
 
-    construtor.construir_indices(lst_jogos)
+    #FODASE CANSEI DPS EU FAÇO MAIS
 
 if __name__=='__main__':
     main()

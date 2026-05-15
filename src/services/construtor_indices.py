@@ -7,65 +7,83 @@ class ConstrutorIndices:
         self.ano = 2
         self.genero = 3
         self.publicadora = 4
+        self.plataforma = 5
 
-    def construir_indices(self, lst_jogos: list[list[str]]):
+    def construir_indices(self):
+        lst_jogos = self.__ler_games_dat()
+
         indice_primario = []
-        
-        for i in range(len(lst_jogos)):
-            id_jogo = lst_jogos[i][self.id]
-            indice_primario.append([id_jogo, str(i)])
-        
+        for campos, offset in lst_jogos:
+            indice_primario.append([campos[self.id], str(offset)])
         indice_primario.sort(key=lambda x: int(x[0]))
-
         self.__salvar_ind("primario.ind", indice_primario)
 
-        idx_gen, lst_gen = self.__gerar_lst_invertida(lst_jogos, self.genero)
-        idx_pub, lst_pub = self.__gerar_lst_invertida(lst_jogos, self.publicadora)
-        
-        return idx_gen, lst_gen, idx_pub, lst_pub
+        idx_gen, lst_gen = self.__gerar_lst_invertida(lst_jogos, self.genero, 0)
+        idx_pub, lst_pub = self.__gerar_lst_invertida(
+            lst_jogos, self.publicadora, len(lst_gen)
+        )
+
+        self.__salvar_ind("genero.ind", idx_gen)
+        self.__salvar_ind("publicadora.ind", idx_pub)
+        self.__salvar_ind("listaInvertida.lst", lst_gen + lst_pub)
+
+        return indice_primario, idx_gen, lst_gen, idx_pub, lst_pub
+
+    def __ler_games_dat(self):
+        lst_jogos = []
+
+        arq = open("games.dat", "rb")
+        tamanho_bytes = arq.read(2)
+
+        while tamanho_bytes:
+            offset = arq.tell() - 2
+            tamanho = int.from_bytes(tamanho_bytes, "big")
+            conteudo = arq.read(tamanho).decode("utf-8")
+
+            if not conteudo.startswith("*"):
+                campos = conteudo.split("|")
+                lst_jogos.append((campos, offset))
+
+            tamanho_bytes = arq.read(2)
+
+        arq.close()
+        return lst_jogos
 
     def __salvar_ind(self, nome_arq: str, dados):
         if os.path.exists(nome_arq):
             os.remove(nome_arq)
 
-        arquivo = open(nome_arq, 'w')
-        
-        for i in dados:
-            arquivo.write(f"{i[0], i[1]}\n")
-        
+        arquivo = open(nome_arq, "w", encoding="utf-8")
+        for entrada in dados:
+            arquivo.write(f"{entrada[0]}|{entrada[1]}\n")
         arquivo.close()
 
-    def __gerar_lst_invertida(self, lst_jogos: list[list[str]], idx_col: int):
-        agrupados = []
+    def __gerar_lst_invertida(self, lst_jogos: list, idx_col: int, offset: int):
+        grupos = {}
+        for campos, _ in lst_jogos:
+            chave = campos[idx_col]
+            id_jogo = campos[self.id]
+            if chave not in grupos:
+                grupos[chave] = []
+            grupos[chave].append(id_jogo)
 
-        for jogo in lst_jogos:
-            chave = jogo[idx_col]
-            id = jogo[self.id]
-
-            item = ""
-            index = 0
-            while item != "" or index == (len(lst_jogos) - 1):
-                if chave == lst_jogos[index]:
-                    item = lst_jogos[index][self.id]
-                else:
-                    index += 1
-                    agrupados.append([chave, id])
-            
-            agrupados.sort()
+        chaves_ordenadas = sorted(grupos.keys())
 
         indice_secundario = []
-        lista_invertida_local = []
-        posicao_atual_lst = 0
+        lista_invertida = []
+        posicao_atual = offset
 
-        for grupo in agrupados:
-            chave = grupo[0]
-            ids = grupo[1:]
-            
-            indice_secundario.append([chave, str(posicao_atual_lst)])
-            
+        for chave in chaves_ordenadas:
+            ids = grupos[chave]
+
+            indice_secundario.append([chave, str(posicao_atual)])
+
             for i in range(len(ids)):
-                proximo = str(posicao_atual_lst + 1) if i < len(ids) - 1 else "-1"
-                lista_invertida_local.append([ids[i], proximo])
-                posicao_atual_lst += 1
+                if i < len(ids) - 1:
+                    proximo = str(posicao_atual + 1)
+                else:
+                    proximo = "-1"
+                lista_invertida.append([ids[i], proximo])
+                posicao_atual += 1
 
-        return indice_secundario, lista_invertida_local
+        return indice_secundario, lista_invertida
