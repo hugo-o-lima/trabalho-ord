@@ -9,13 +9,14 @@ class ConstrutorIndices:
         self.publicadora = 4
         self.plataforma = 5
 
-    def construir_indices(self):
-        lst_jogos = self.__ler_games_dat()
+    def construir_indices(self, caminho: str = "games.dat"):
+        lst_jogos = self.__ler_games_dat(caminho)
 
         indice_primario = []
         for campos, offset in lst_jogos:
             indice_primario.append([campos[self.id], str(offset)])
-        indice_primario.sort(key=lambda x: int(x[0]))
+            
+        indice_primario.sort()
         self.__salvar_ind("primario.ind", indice_primario)
 
         idx_gen, lst_gen = self.__gerar_lst_invertida(lst_jogos, self.genero, 0)
@@ -29,15 +30,14 @@ class ConstrutorIndices:
 
         return indice_primario, idx_gen, lst_gen, idx_pub, lst_pub
 
-    def __ler_games_dat(self):
+    def __ler_games_dat(self, caminho: str = "games.dat"):
         lst_jogos = []
-
-        arq = open("games.dat", "rb")
+        arq = open(caminho, "rb")
+        
         tamanho_bytes = arq.read(2)
-
         while tamanho_bytes:
             offset = arq.tell() - 2
-            tamanho = int.from_bytes(tamanho_bytes, "big")
+            tamanho = int.from_bytes(tamanho_bytes, "little")
             conteudo = arq.read(tamanho).decode("utf-8")
 
             if not conteudo.startswith("*"):

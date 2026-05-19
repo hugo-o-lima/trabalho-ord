@@ -8,10 +8,8 @@ def main():
     interpretador = Interpretador()
     construtor = ConstrutorIndices()
 
-    jogos_string = interpretador.ler_arquivo("games.dat")
-    lst_jogos = interpretador.split_arquivo(jogos_string)
-
-    #FODASE CANSEI DPS EU FAÇO MAIS
+    if sys.argv[1] == "-b":
+        construtor.construir_indices()
 
 if __name__=='__main__':
     main()
