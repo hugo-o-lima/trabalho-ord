@@ -19,7 +19,10 @@ def main():
     if arg1 == "-b":
         construtor.construir_indices()
     if arg1 == "-e":
-        pass
+        operacoes = interpretador.interpretar_operacoes()
+        if len(operacoes)==0:
+            print("Erro: não foi possível processar o arquivo de operações.")
+            return
     else:
         print("Funcionalidade não existe, tente novamente usando '-b', '-e' ou '-c'.")
 

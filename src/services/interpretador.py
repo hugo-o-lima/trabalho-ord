@@ -61,8 +61,11 @@ class Interpretador:
         # usa tipo ids pra identificar as operações pra não precisar iterar pelas strings toda vez q rodar uma operação (0=bp,1=bs1,etc.)
         # TODO: revisar se esse é o melhor jeito de fazer isso
         lst_operacoes = __ler_operacoes()
+        lst_id_operacoes = []
         for i in lst_operacoes:
             for op in range(len(LISTA_OPERACOES)):
                 if i == LISTA_OPERACOES[op]:
-                    return op
-        return -1
+                    lst_id_operacoes.append(op)
+                else:
+                    print(f"Erro: operação {i} não encontrada.")
+                    return
