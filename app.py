@@ -25,6 +25,15 @@ def main():
         if len(operacoes)==0:
             print("Erro: não foi possível processar o arquivo de operações.")
             return
+        
+        interpretador.carregar_todos_os_indices()
+        
+        for codigo_op, argumento in operacoes:
+            if codigo_op == 4:
+                processador.remover_registro(argumento, interpretador)
+
+        interpretador.salvar_todos_os_indices()
+
     elif arg1 == "-c":
         interpretador.carregar_todos_os_indices()
     else:
