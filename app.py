@@ -3,11 +3,14 @@ import os
 
 from src.services.interpretador import Interpretador
 from src.services.construtor_indices import ConstrutorIndices
+from src.services.processador_operacoes import ProcessadorOperacoes
 
 def main():
     construtor = ConstrutorIndices()
     interpretador = Interpretador("operacoes")
     interpretador.carregar_todos_os_indices()
+    processador = ProcessadorOperacoes()
+
 
     arg1 = sys.argv[1]
     if not arg1:
