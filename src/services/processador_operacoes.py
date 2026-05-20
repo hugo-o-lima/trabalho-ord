@@ -2,8 +2,7 @@ import math
 
 class ProcessadorOperacoes:
     def __init__(self):
-        lst = [1, 3, 6, 9, 12, 30]
-        print(self.busca_binaria(lst, 8))
+        pass
 
     def busca_binaria(self, lst_indices, indice_buscado):
         if len(lst_indices) <= 1:
