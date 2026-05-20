@@ -7,7 +7,10 @@ from src.services.processador_operacoes import ProcessadorOperacoes
 
 def main():
     construtor = ConstrutorIndices()
-    interpretador = Interpretador("operacoes")
+    if sys.argv[2]:
+        interpretador = Interpretador(sys.argv[2])
+    else:
+        interpretador = Interpretador()
     interpretador.carregar_todos_os_indices()
     processador = ProcessadorOperacoes()
 
@@ -18,11 +21,13 @@ def main():
 
     if arg1 == "-b":
         construtor.construir_indices()
-    if arg1 == "-e":
+    elif arg1 == "-e":
         operacoes = interpretador.interpretar_operacoes()
         if len(operacoes)==0:
             print("Erro: não foi possível processar o arquivo de operações.")
             return
+    elif arg1 == "-c":
+        pass
     else:
         print("Funcionalidade não existe, tente novamente usando '-b', '-e' ou '-c'.")
 
