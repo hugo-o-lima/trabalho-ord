@@ -5,6 +5,7 @@ class Interpretador:
     def __init__(self, caminho_operacoes: str = "arquivo_operacoes"):
         self.caminho_operacoes = caminho_operacoes
         
+        self.indice_primario = []
         self.indice_genero = []
         self.indice_publicadora = []
         self.lista_invertida = []
@@ -12,6 +13,7 @@ class Interpretador:
     def carregar_todos_os_indices(self):
         self.__carregar_lista_invertida()
         
+        self.indice_primario = self.__carregar_indice_primario()
         self.indice_genero = self.__carregar_indice_secundario(CAMINHO_INDICE_GENEROS)
         self.indice_publicadora = self.__carregar_indice_secundario(CAMINHO_INDICE_PUBLICADORAS)
 
@@ -44,6 +46,20 @@ class Interpretador:
                     
             indice_temporario.sort() 
             return indice_temporario
+
+    def __carregar_indice_primario(self):
+        if not os.path.exists(CAMINHO_INDICE_PRIMARIO):
+            print("Erro: Arquivo de índice primário não encontrado.")
+            return
+
+        with open(CAMINHO_INDICE_PRIMARIO, 'r', encoding='utf-8') as arquivo:
+            for linha in arquivo:
+                linha = linha.strip()
+                if not linha:
+                    continue
+
+                id_jogo, offset = linha.split("|")
+                self.indice_primario.append([id_jogo, int(offset)])
 
     def __ler_operacoes(self):
         if not os.path.exists(self.caminho_operacoes):

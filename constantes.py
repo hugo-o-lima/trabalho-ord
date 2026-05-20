@@ -1,4 +1,5 @@
 CAMINHO_JOGOS = "games.dat"
+CAMINHO_INDICE_PRIMARIO = "primario.ind"
 CAMINHO_INDICE_GENEROS = "genero.ind"
 CAMINHO_INDICE_PUBLICADORAS = "publicadora.ind"
 CAMINHO_LISTA_INVERTIDA = "listaInvertida.lst"
