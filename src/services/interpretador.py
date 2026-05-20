@@ -22,6 +22,27 @@ class Interpretador:
         self.__salvar_indice(CAMINHO_INDICE_GENEROS, self.indice_genero)
         self.__salvar_indice(CAMINHO_INDICE_PUBLICADORAS, self.indice_publicadora)
         self.__salvar_indice(CAMINHO_LISTA_INVERTIDA, self.lista_invertida)
+    
+    def interpretar_operacoes(self):
+        lst_operacoes = self.__ler_operacoes()
+        lst_id_operacoes = []
+        for linha in lst_operacoes:
+            linha = linha.strip()
+            if not linha:
+                continue
+            partes = linha.split(" ", 1)
+            codigo = partes[0]
+            argumento = partes[1] if len(partes) > 1 else ""
+            encontrado = False
+            for op in range(len(LISTA_OPERACOES)):
+                if codigo == LISTA_OPERACOES[op]:
+                    lst_id_operacoes.append((op, argumento))
+                    encontrado = True
+                    break
+            if not encontrado:
+                print(f"Erro: operação '{codigo}' não encontrada.")
+                return []
+        return lst_id_operacoes
 
     def __salvar_indice(self, caminho, dados):
         with open(caminho, 'w', encoding='utf-8') as arquivo:
@@ -83,24 +104,4 @@ class Interpretador:
         lst_operacoes = str_operacoes.split("\n")
 
         return lst_operacoes
-
-    def interpretar_operacoes(self):
-        lst_operacoes = self.__ler_operacoes()
-        lst_id_operacoes = []
-        for linha in lst_operacoes:
-            linha = linha.strip()
-            if not linha:
-                continue
-            partes = linha.split(" ", 1)
-            codigo = partes[0]
-            argumento = partes[1] if len(partes) > 1 else ""
-            encontrado = False
-            for op in range(len(LISTA_OPERACOES)):
-                if codigo == LISTA_OPERACOES[op]:
-                    lst_id_operacoes.append((op, argumento))
-                    encontrado = True
-                    break
-            if not encontrado:
-                print(f"Erro: operação '{codigo}' não encontrada.")
-                return []
-        return lst_id_operacoes
+    
