@@ -43,7 +43,7 @@ class ConstrutorIndices:
 
             if not conteudo.startswith("*"):
                 campos = conteudo.split("|")
-                lst_jogos.append((campos, offset))
+                lst_jogos.append([campos, offset])
 
             tamanho_bytes = arq.read(2)
 
@@ -60,31 +60,34 @@ class ConstrutorIndices:
         arquivo.close()
 
     def __gerar_lst_invertida(self, lst_jogos: list, idx_col: int, offset: int):
-        grupos = {}
+        pares = []
         for campos, _ in lst_jogos:
-            chave = campos[idx_col]
-            id_jogo = campos[self.id]
-            if chave not in grupos:
-                grupos[chave] = []
-            grupos[chave].append(id_jogo)
+            pares.append([campos[idx_col], campos[self.id]])
 
-        chaves_ordenadas = sorted(grupos.keys())
+        pares.sort()
 
         indice_secundario = []
         lista_invertida = []
         posicao_atual = offset
+        i = 0
 
-        for chave in chaves_ordenadas:
-            ids = grupos[chave]
-
+        while i < len(pares):
+            chave = pares[i][0]
             indice_secundario.append([chave, str(posicao_atual)])
 
-            for i in range(len(ids)):
-                if i < len(ids) - 1:
+            j = i
+            while j < len(pares) and pares[j][0] == chave:
+                j += 1
+
+            grupo_size = j - i
+            for k in range(grupo_size):
+                if k < grupo_size - 1:
                     proximo = str(posicao_atual + 1)
                 else:
                     proximo = "-1"
-                lista_invertida.append([ids[i], proximo])
+                lista_invertida.append([pares[i + k][1], proximo])
                 posicao_atual += 1
+
+            i = j
 
         return indice_secundario, lista_invertida
