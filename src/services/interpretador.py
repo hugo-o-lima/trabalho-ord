@@ -1,45 +1,58 @@
+from constantes import *
 import os
 
 class Interpretador:
-    def __init__(self) -> None:
-        pass
-
-    def ler_arquivo(self, caminho: str) -> str:
-        if not os.path.exists(caminho):
-            raise FileNotFoundError(f"Não foi encontrado arquivo {caminho}.")
+    def __init__(self, caminho_operacoes: str = "arquivo_operacoes") -> None:
+        self.caminho_operacoes = caminho_operacoes
         
-        arquivo = open(caminho, 'rb')
+        self.indice_genero = []
+        self.indice_publicadora = []
+        self.lista_invertida = []
 
-        dados = arquivo.read()
-        dados_decodificados = dados.decode("utf-8")
+    def carregar_todos_os_indices(self) -> None:
+        self.__carregar_lista_invertida()
+        
+        self.indice_genero = self.__carregar_indice_secundario(CAMINHO_INDICE_GENEROS)
+        self.indice_publicadora = self.__carregar_indice_secundario(CAMINHO_INDICE_PUBLICADORAS)
 
-        arquivo.close()
-        return dados_decodificados
+    def __carregar_lista_invertida(self) -> None:
+        if not os.path.exists(CAMINHO_LISTA_INVERTIDA):
+            print("Erro: Arquivo de lista invertida não encontrado.")
+            return
 
-    def split_arquivo(self, conteudo: str) -> list[list[str]]:
-            if not conteudo:
-                raise ValueError("Arquivo está vazio.")
-
-            lst_jogos = []    
-            
-            blocos = conteudo.split('\x00')
-
-            for i in range(1, len(blocos)):
-                bloco = blocos[i]
+        with open(CAMINHO_LISTA_INVERTIDA, 'r', encoding='utf-8') as arquivo:
+            for linha in arquivo:
+                linha = linha.strip()
+                if not linha: 
+                    continue
                 
-                if "|" in bloco:
-                    campos = bloco.split('|')
+                id_jogo, proximo_ponteiro = linha.split("|")
+                self.lista_invertida.append([id_jogo, int(proximo_ponteiro)])
 
-                    if i < len(blocos) - 1 and len(campos[-1]) > 0:
-                        campos[-1] = campos[-1][:-1]
+    def __carregar_indice_secundario(self, caminho_indice: str) -> list:
+            if not os.path.exists(caminho_indice):
+                return []
+
+            indice_temporario = []
+            with open(caminho_indice, 'r', encoding='utf-8') as arquivo:
+                for linha in arquivo:
+                    linha = linha.strip()
+                    if not linha: continue
                     
-                    lista_campos = []
-                    for campo in campos:
-                        valor = campo.strip()
-                        if valor:
-                            lista_campos.append(valor)
+                    chave_secundaria, pos_lista_invertida = linha.split("|")
+                    indice_temporario.append([chave_secundaria, int(pos_lista_invertida)])
+                    
+            indice_temporario.sort() 
+            return indice_temporario
 
-                    if lista_campos:
-                        lst_jogos.append(lista_campos)
-            
-            return lst_jogos
+    def __ler_operacoes(self) -> str:
+        if not os.path.exists(self.caminho_operacoes):
+            raise FileNotFoundError(f"Não foi encontrado arquivo {self.caminho_operacoes}.")
+        
+        arquivo = open(self.caminho_operacoes, 'r')
+        str_operacoes = arquivo.read()
+        arquivo.close()
+
+        lst_operacoes = str_operacoes.split("\n")
+
+        return lst_operacoes

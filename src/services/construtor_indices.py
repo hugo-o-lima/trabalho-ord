@@ -1,3 +1,4 @@
+from constantes import *
 import os
 
 class ConstrutorIndices:
@@ -9,8 +10,8 @@ class ConstrutorIndices:
         self.publicadora = 4
         self.plataforma = 5
 
-    def construir_indices(self, caminho: str = "games.dat"):
-        lst_jogos = self.__ler_games_dat(caminho)
+    def construir_indices(self):
+        lst_jogos = self.__ler_games_dat(CAMINHO_JOGOS)
 
         indice_primario = []
         for campos, offset in lst_jogos:
@@ -24,9 +25,9 @@ class ConstrutorIndices:
             lst_jogos, self.publicadora, len(lst_gen)
         )
 
-        self.__salvar_ind("genero.ind", idx_gen)
-        self.__salvar_ind("publicadora.ind", idx_pub)
-        self.__salvar_ind("listaInvertida.lst", lst_gen + lst_pub)
+        self.__salvar_ind(CAMINHO_INDICE_GENEROS, idx_gen)
+        self.__salvar_ind(CAMINHO_INDICE_PUBLICADORAS, idx_pub)
+        self.__salvar_ind(CAMINHO_LISTA_INVERTIDA, lst_gen + lst_pub)
 
         return indice_primario, idx_gen, lst_gen, idx_pub, lst_pub
 
