@@ -58,14 +58,22 @@ class Interpretador:
         return lst_operacoes
 
     def interpretar_operacoes(self):
-        # usa tipo ids pra identificar as operações pra não precisar iterar pelas strings toda vez q rodar uma operação (0=bp,1=bs1,etc.)
-        # TODO: revisar se esse é o melhor jeito de fazer isso
-        lst_operacoes = __ler_operacoes()
+        lst_operacoes = self.__ler_operacoes()
         lst_id_operacoes = []
-        for i in lst_operacoes:
+        for linha in lst_operacoes:
+            linha = linha.strip()
+            if not linha:
+                continue
+            partes = linha.split(" ", 1)
+            codigo = partes[0]
+            argumento = partes[1] if len(partes) > 1 else ""
+            encontrado = False
             for op in range(len(LISTA_OPERACOES)):
-                if i == LISTA_OPERACOES[op]:
-                    lst_id_operacoes.append(op)
-                else:
-                    print(f"Erro: operação {i} não encontrada.")
-                    return
+                if codigo == LISTA_OPERACOES[op]:
+                    lst_id_operacoes.append((op, argumento))
+                    encontrado = True
+                    break
+            if not encontrado:
+                print(f"Erro: operação '{codigo}' não encontrada.")
+                return []
+        return lst_id_operacoes
