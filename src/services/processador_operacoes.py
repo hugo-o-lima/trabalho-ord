@@ -28,7 +28,6 @@ class ProcessadorOperacoes:
         pos_primario = self.busca_binaria(interpretador.indice_primario, id_remocao)
         
         if pos_primario == -1:
-            # Padrão de saída exigido na especificação (EspecificacaoTrab1.pdf)
             print("Registro não encontrado!")
             return False
 

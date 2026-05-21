@@ -4,15 +4,16 @@ import os
 from src.services.interpretador import Interpretador
 from src.services.construtor_indices import ConstrutorIndices
 from src.services.processador_operacoes import ProcessadorOperacoes
+from src.services.compactador import Compactador
 
 def main():
     construtor = ConstrutorIndices()
+    processador = ProcessadorOperacoes()
+    compactador = Compactador()
     if len(sys.argv)>2:
         interpretador = Interpretador(sys.argv[2])
     else:
         interpretador = Interpretador()
-    processador = ProcessadorOperacoes()
-
 
     if len(sys.argv)<2:
         print("Funcionalidade não encontrada. Use '-b' para construir indices, '-e' para rodar operacoes ou '-c' para compactar arquivo.")
@@ -35,7 +36,9 @@ def main():
         interpretador.salvar_todos_os_indices()
 
     elif arg1 == "-c":
-        interpretador.carregar_todos_os_indices()
+        compactador = Compactador()
+        lst_offsets = compactador.compactar_arquivo()
+        construtor.construir_indices()
     else:
         print("Funcionalidade não existe, tente novamente usando '-b', '-e' ou '-c'.")
 
