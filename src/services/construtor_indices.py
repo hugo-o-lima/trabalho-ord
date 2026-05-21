@@ -29,7 +29,7 @@ class ConstrutorIndices:
         self.__salvar_ind(CAMINHO_INDICE_PUBLICADORAS, idx_pub)
         self.__salvar_ind(CAMINHO_LISTA_INVERTIDA, lst_gen + lst_pub)
 
-        return indice_primario, idx_gen, lst_gen, idx_pub, lst_pub
+        return [indice_primario, idx_gen, lst_gen, idx_pub, lst_pub]
 
     def __ler_games_dat(self, caminho: str = "games.dat"):
         lst_jogos = []
@@ -90,4 +90,4 @@ class ConstrutorIndices:
 
             i = j
 
-        return indice_secundario, lista_invertida
+        return [indice_secundario, lista_invertida]

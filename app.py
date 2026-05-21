@@ -22,6 +22,12 @@ def main():
     if arg1 == "-b":
         construtor.construir_indices()
     elif arg1 == "-e":
+        if not os.path.exists(CAMINHO_INDICE_PRIMARIO):
+            if not os.path.exists(CAMINHO_JOGOS):
+                print(f"Erro: A base de dados '{CAMINHO_JOGOS}' não foi encontrada para gerar os índices.")
+                return
+            construtor.construir_indices()
+
         operacoes = interpretador.interpretar_operacoes()
         if len(operacoes)==0:
             print("Erro: não foi possível processar o arquivo de operações.")
@@ -49,6 +55,3 @@ def main():
         construtor.construir_indices()
     else:
         print("Funcionalidade não existe, tente novamente usando '-b', '-e' ou '-c'.")
-
-if __name__=='__main__':
-    main()

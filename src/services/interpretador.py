@@ -1,22 +1,21 @@
 from constantes import *
 import os
-from typing import List, Tuple
+from typing import List
 
 class Interpretador:
     def __init__(self, caminho_operacoes: str = "arquivo_operacoes"):
         self.caminho_operacoes = caminho_operacoes
         
-        self.indice_primario: List[Tuple[str, int]] = []
-        self.indice_genero: List[Tuple[str, int]] = []
-        self.indice_publicadora: List[Tuple[str, int]] = []
-        self.lista_invertida: List[Tuple[str, int]] = []
+        self.indice_primario: List[list] = []
+        self.indice_genero: List[list] = []
+        self.indice_publicadora: List[list] = []
+        self.lista_invertida: List[list] = []
 
     def carregar_todos_os_indices(self):
         self.__carregar_lista_invertida()
-        
         self.__carregar_indice_primario()
-        self.__carregar_indice_secundario(CAMINHO_INDICE_GENEROS)
-        self.__carregar_indice_secundario(CAMINHO_INDICE_PUBLICADORAS)
+        self.indice_genero = self.__carregar_indice_secundario(CAMINHO_INDICE_GENEROS)
+        self.indice_publicadora = self.__carregar_indice_secundario(CAMINHO_INDICE_PUBLICADORAS)
 
     def salvar_todos_os_indices(self):
         self.__salvar_indice(CAMINHO_INDICE_PRIMARIO, self.indice_primario)
@@ -37,7 +36,7 @@ class Interpretador:
             encontrado = False
             for op in range(len(LISTA_OPERACOES)):
                 if codigo == LISTA_OPERACOES[op]:
-                    lst_id_operacoes.append((op, argumento))
+                    lst_id_operacoes.append([op, argumento])
                     encontrado = True
                     break
             if not encontrado:
@@ -62,23 +61,23 @@ class Interpretador:
                     continue
                 
                 id_jogo, proximo_ponteiro = linha.split("|")
-                self.lista_invertida.append((id_jogo, int(proximo_ponteiro)))
+                self.lista_invertida.append([id_jogo, int(proximo_ponteiro)])
 
     def __carregar_indice_secundario(self, caminho_indice: str):
-            if not os.path.exists(caminho_indice):
-                return []
+        if not os.path.exists(caminho_indice):
+            return []
 
-            indice_temporario = []
-            with open(caminho_indice, 'r', encoding='utf-8') as arquivo:
-                for linha in arquivo:
-                    linha = linha.strip()
-                    if not linha: continue
-                    
-                    chave_secundaria, pos_lista_invertida = linha.split("|")
-                    indice_temporario.append((chave_secundaria, int(pos_lista_invertida)))
-                    
-            indice_temporario.sort() 
-            return indice_temporario
+        indice_temporario = []
+        with open(caminho_indice, 'r', encoding='utf-8') as arquivo:
+            for linha in arquivo:
+                linha = linha.strip()
+                if not linha: continue
+                
+                chave_secundaria, pos_lista_invertida = linha.split("|")
+                indice_temporario.append([chave_secundaria, int(pos_lista_invertida)])
+                
+        indice_temporario.sort() 
+        return indice_temporario
 
     def __carregar_indice_primario(self):
         if not os.path.exists(CAMINHO_INDICE_PRIMARIO):
@@ -92,7 +91,7 @@ class Interpretador:
                     continue
 
                 id_jogo, offset = linha.split("|")
-                self.indice_primario.append((id_jogo, int(offset)))
+                self.indice_primario.append([id_jogo, int(offset)])
 
     def __ler_operacoes(self):
         if not os.path.exists(self.caminho_operacoes):
@@ -105,4 +104,3 @@ class Interpretador:
         lst_operacoes = str_operacoes.split("\n")
 
         return lst_operacoes
-    

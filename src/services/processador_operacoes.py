@@ -70,7 +70,8 @@ class ProcessadorOperacoes:
         tamanho = len(conteudo_bytes)
         tamanho_bytes = tamanho.to_bytes(2, "little")
 
-        with open(CAMINHO_JOGOS, "a+b") as arq:
+        with open(CAMINHO_JOGOS, "r+b") as arq:
+            arq.seek(0, 2)
             offset = arq.tell()
             arq.write(tamanho_bytes)
             arq.write(conteudo_bytes)
@@ -81,13 +82,14 @@ class ProcessadorOperacoes:
         self.__inserir_na_lista_invertida(id_novo, genero, interpretador.indice_genero, interpretador.lista_invertida)
         self.__inserir_na_lista_invertida(id_novo, publicadora, interpretador.indice_publicadora, interpretador.lista_invertida)
 
-        print(f'Inserção do registro de chave "{id_novo}" ({tamanho + 2} bytes)')
+        print(f'Inserção do registro de chave "{id_novo}" ({tamanho} bytes)')
         return True
 
     def remover_registro(self, id_remocao, interpretador):
         pos_primario = self.busca_binaria(interpretador.indice_primario, id_remocao)
         
         if pos_primario == -1:
+            print(f'Remoção do registro de chave "{id_remocao}"')
             print("Registro não encontrado!")
             return False
 
@@ -111,9 +113,8 @@ class ProcessadorOperacoes:
         self.__atualizar_lista_invertida(id_remocao, genero, interpretador.indice_genero, interpretador.lista_invertida)
         self.__atualizar_lista_invertida(id_remocao, publicadora, interpretador.indice_publicadora, interpretador.lista_invertida)
 
-        print(f'Remoção do registro de chave "{id_remocao}"')
+        print(f'Remoção do registro de chave "{id_remocao}" (offset = {offset})')
         return True
-
 
     def __imprimir_registro(self, offset):
         with open(CAMINHO_JOGOS, "rb") as arq:
