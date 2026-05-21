@@ -17,7 +17,7 @@ def main():
 
     if len(sys.argv)<2:
         print("Funcionalidade não encontrada. Use '-b' para construir indices, '-e' para rodar operacoes ou '-c' para compactar arquivo.")
-
+        return # vc esqueceu de colocar o return aqui, então o código continuava rodando e dava erro de index out of range diego
     arg1 = sys.argv[1]
     if arg1 == "-b":
         construtor.construir_indices()
@@ -30,7 +30,15 @@ def main():
         interpretador.carregar_todos_os_indices()
         
         for codigo_op, argumento in operacoes:
-            if codigo_op == 4:
+            if codigo_op == 0:
+                processador.busca_primaria(argumento, interpretador)
+            elif codigo_op == 1:
+                processador.busca_secundaria(argumento, interpretador.indice_genero, "de gênero", interpretador)
+            elif codigo_op == 2:
+                processador.busca_secundaria(argumento, interpretador.indice_publicadora, "da publicadora", interpretador)
+            elif codigo_op == 3:
+                processador.inserir_registro(argumento, interpretador)
+            elif codigo_op == 4:
                 processador.remover_registro(argumento, interpretador)
 
         interpretador.salvar_todos_os_indices()

@@ -14,8 +14,9 @@ class Interpretador:
         self.__carregar_lista_invertida()
         
         self.__carregar_indice_primario()
-        self.__carregar_indice_secundario(CAMINHO_INDICE_GENEROS)
-        self.__carregar_indice_secundario(CAMINHO_INDICE_PUBLICADORAS)
+        
+        self.indice_genero = self.__carregar_indice_secundario(CAMINHO_INDICE_GENEROS) #corrigid, tava dando bo aq
+        self.indice_publicadora = self.__carregar_indice_secundario(CAMINHO_INDICE_PUBLICADORAS)
 
     def salvar_todos_os_indices(self):
         self.__salvar_indice(CAMINHO_INDICE_PRIMARIO, self.indice_primario)
